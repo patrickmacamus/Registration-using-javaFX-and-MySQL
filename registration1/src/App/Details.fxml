@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="498.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="App.detailsController">
+   <children>
+      <Label layoutX="211.0" layoutY="14.0" text="DETAILS">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+      <Separator layoutY="62.0" prefHeight="1.0" prefWidth="500.0" />
+      <Label layoutX="14.0" layoutY="78.0" text="Branch:" />
+      <TextField fx:id="dBranch" layoutX="116.0" layoutY="74.0" />
+      <Label layoutX="11.0" layoutY="108.0" text="ID Number:" />
+      <TextField fx:id="dID" layoutX="116.0" layoutY="104.0" />
+      <Label layoutX="8.0" layoutY="137.0" text="Motorcycle Model:" />
+      <TextField fx:id="dMoto" layoutX="116.0" layoutY="133.0" />
+      <Label layoutX="10.0" layoutY="166.0" text="Engine Number:" />
+      <Label layoutX="12.0" layoutY="195.0" text="Chasis Number:" />
+      <TextField fx:id="dEngine" layoutX="116.0" layoutY="162.0" />
+      <TextField fx:id="dChasis" layoutX="116.0" layoutY="191.0" />
+      <Label layoutX="10.0" layoutY="223.0" text="Color:" />
+      <TextField fx:id="dColor" layoutX="116.0" layoutY="219.0" />
+      <Label layoutX="290.0" layoutY="78.0" text="TransDate:" />
+      <TextField fx:id="dDate" layoutX="351.0" layoutY="74.0" prefHeight="25.0" prefWidth="124.0" />
+      <TextField fx:id="dReceived" layoutX="351.0" layoutY="104.0" prefHeight="25.0" prefWidth="124.0" />
+      <TextField fx:id="dReleased" layoutX="351.0" layoutY="133.0" prefHeight="25.0" prefWidth="124.0" />
+      <Label layoutX="270.0" layoutY="108.0" text="Date Received:" />
+      <Label layoutX="271.0" layoutY="137.0" text="Date Released:" />
+      <Label layoutX="9.0" layoutY="250.0" text="Company Name:" />
+      <TextField fx:id="dCompany" layoutX="116.0" layoutY="246.0" />
+      <TextField fx:id="dOR" layoutX="116.0" layoutY="274.0" />
+      <TextField fx:id="dSI" layoutX="116.0" layoutY="302.0" />
+      <TextField fx:id="dSticker" layoutX="116.0" layoutY="330.0" />
+      <Label layoutX="12.0" layoutY="278.0" text="&amp;/OR:" />
+      <Label layoutX="12.0" layoutY="306.0" text="S.I Number:" />
+      <Label layoutX="12.0" layoutY="334.0" text="Sticker:" />
+      <TextField fx:id="dSurname" layoutX="116.0" layoutY="358.0" prefHeight="25.0" prefWidth="362.0" />
+      <TextField fx:id="dFirstname" layoutX="116.0" layoutY="387.0" prefHeight="25.0" prefWidth="362.0" />
+      <TextField fx:id="dMiddlename" layoutX="116.0" layoutY="416.0" prefHeight="25.0" prefWidth="362.0" />
+      <TextField fx:id="dFileNo" layoutX="351.0" layoutY="162.0" prefHeight="25.0" prefWidth="124.0" />
+      <TextField fx:id="dStatus" layoutX="351.0" layoutY="191.0" prefHeight="25.0" prefWidth="124.0" />
+      <Label layoutX="276.0" layoutY="166.0" text="File Number:" />
+      <Label layoutX="296.0" layoutY="195.0" text="Status:" />
+      <TextField fx:id="dPlateNo" layoutX="351.0" layoutY="219.0" prefHeight="25.0" prefWidth="124.0" />
+      <Label layoutX="272.0" layoutY="223.0" text="Plate Number:" />
+      <Label layoutX="276.0" layoutY="250.0" text="Note:" />
+      <TextArea fx:id="dNote" layoutX="312.0" layoutY="248.0" prefHeight="102.0" prefWidth="162.0" />
+      <Label layoutX="12.0" layoutY="362.0" text="Surname:" />
+      <Label layoutX="12.0" layoutY="391.0" text="Firstname:" />
+      <Label layoutX="12.0" layoutY="420.0" text="Middlename:" />
+      <Button layoutX="393.0" layoutY="454.0" mnemonicParsing="false" onAction="#changeScreenButtonPushed" prefHeight="30.0" prefWidth="76.0" text="Back" />
+   </children>
+</AnchorPane>

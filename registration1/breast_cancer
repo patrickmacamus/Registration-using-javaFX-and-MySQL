@@ -1,0 +1,1278 @@
+package APP;
+
+import java.io.IOException;
+import java.sql.*;
+import java.text.DecimalFormat;
+
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
+import javafx.stage.Stage;
+
+public class MainController {
+
+	
+	
+	
+	@FXML
+	
+	private RadioButton rbtnAge45,rbtnAge50;
+
+	@FXML
+	private RadioButton rbtnMld1,rbtnMld2,rbtnMld3,rbtnMld4,rbtnMld5,rbtnMld6,rbtnMld7,rbtnMld8,rbtnMld9,rbtnMld10,rbtnMld11,rbtnMld12;
+	
+	@FXML
+	private RadioButton rbtnMdr1,rbtnMdr2,rbtnMdr3,rbtnMdr4,rbtnMdr5,rbtnMdr6,rbtnMdr7,rbtnMdr8,rbtnMdr9,rbtnMdr10,rbtnMdr11,rbtnMdr12;
+	
+	@FXML
+	private RadioButton rbtnSvr1,rbtnSvr2,rbtnSvr3,rbtnSvr4,rbtnSvr5,rbtnSvr6,rbtnSvr7,rbtnSvr8,rbtnSvr9,rbtnSvr10,rbtnSvr11,rbtnSvr12;
+	
+	@FXML
+	
+	private RadioButton rbtnVSvr1,rbtnVSvr2,rbtnVSvr3,rbtnVSvr4,rbtnVSvr5,rbtnVSvr6,rbtnVSvr7,rbtnVSvr8,rbtnVSvr9,rbtnVSvr10,rbtnVSvr11,rbtnVSvr12;
+	
+	@FXML 
+	
+	private Button btnAssessment,btnAnalyze;
+	
+	@FXML
+	
+	private Label lbloutput,lbloutput1,lblsave,lbleval;
+	
+	double conmld1 = 0,conmld2 = 0,conmld3 = 0,conmdr1 = 0,conmdr2 = 0,conmdr3 = 0,conmdr4 = 0,consvr1 = 0,consvr2 = 0,convrs1 = 0,convrs2 = 0,convrs3 = 0;
+
+	
+	public void record(ActionEvent event) throws Exception {
+		try {
+			Stage primaryStage = new Stage();
+			
+			Parent root = FXMLLoader.load(getClass().getResource("/APP/userRecord.fxml"));
+			Scene scene = new Scene(root,497,379);
+			//scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			primaryStage.setScene(scene);
+			primaryStage.show();
+			
+		}
+		catch (Exception e){
+			
+		}
+	}
+	
+	public void Proceed(ActionEvent event) throws Exception {
+		
+		try{
+			inferenceEngine();
+			DecimalFormat df = new DecimalFormat("#.#");
+			double x;
+			x=getoutputx();
+			
+			
+			System.out.println((df.format(x))+"%");
+
+			lbloutput.setText(df.format(x));
+			lbloutput1.setText(df.format(x));
+		}
+		catch(Exception e){	
+		}
+	}
+	
+	/*Mapping
+	 * 		 s1      s2      s3      s4      s5      s6      s7      s8      s9     s10     s11     s12
+	 * 1	0.25	0.25	0.25	0.25	0.25	0.25	0.25	0.25	0.25	0.25	0.25	0.75
+	 * 2	0.25	0.25	0.25	0.25	0.25	0.25	0.25	0.25	0.25	0.25	0.75	0.25
+	 * 3	0.5		0.5		0.5		0.75	0.75	0.5		0.5		0.5		0.25	0.25	0.25	0.25
+	 * 4	0.5		0.75	0.25	0.25	0.75	0.75	0.25	0.5		0.75	0.25	0.5		0.5
+	 * 5	0.25	0.75	0.75	0.5		0.25	1.0		0.5		0.25	0.5		0.5		0.5		0.25
+	 * 6	0.25	0.25	0.75	0.5		0.25	0.25	0.25	0.75	0.25	0.25	0.25	0.25
+	 * 7	0.75	0.25	0.5		0.25	0.5		0.25	1.0		0.5		0.25	0.5		0.5		0.5
+	 * 8	1.0		0.5		0.5		0.5		0.25	0.5		0.25	0.5		0.25	0.5		0.25	0.5
+	 * 9	0.25	0.25	0.5		0.25	0.25	0.25	0.25	0.25	0.25	0.25	0.75	0.25	
+	 * 10	0.25	0.5		0.25	0.25	0.25	0.25	0.25	0.25	0.25	0.25	0.75	0.25
+	 * 11	0.25	0.25	0.25	0.25	0.25	0.25	0.25	0.25	0.25	0.25	0.75	0.25
+	 * 12	0.5		0.5		0.5		0.75	0.75	0.5		0.5		0.5		0.25	0.25	0.25	0.25	
+	 */
+	double r1,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12;
+	String sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8,sr9,sr10,sr11,sr12;
+	double outputx=0;
+
+
+
+
+//Setter and Getters
+	
+public double getR1() {
+		return r1;
+	}
+
+	public void setR1(double r1) {
+		this.r1 = r1;
+	}
+	
+	public double getR2() {
+		return r2;
+	}
+
+	public void setR2(double r2) {
+		this.r2 = r2;
+	}
+	
+	public double getR3() {
+		return r3;
+	}
+
+	public void setR3(double r3) {
+		this.r3 = r3;
+	}
+	
+	
+	public double getR4() {
+		return r4;
+	}
+
+
+
+	public void setR4(double r4) {
+		this.r4 = r4;
+	}
+
+	public double getR5() {
+		return r5;
+	}
+
+
+
+	public void setR5(double r5) {
+		this.r5 = r5;
+	}
+	
+	
+	public double getR6() {
+		return r6;
+	}
+
+
+
+	public void setR6(double r6) {
+		this.r6 = r6;
+	}
+	
+	public double getR7() {
+		return r7;
+	}
+
+
+
+	public void setR7(double r7) {
+		this.r7 = r7;
+	}
+	
+	
+	public double getR8() {
+		return r8;
+	}
+
+
+
+	public void setR8(double r8) {
+		this.r8 = r8;
+	}
+	
+	
+	public double getR9() {
+		return r9;
+	}
+
+
+
+	public void setR9(double r9) {
+		this.r9 = r9;
+	}
+	
+	public double getR10() {
+		return r10;
+	}
+
+
+
+	public void setR10(double r10) {
+		this.r10 = r10;
+	}
+	
+	public double getR11() {
+		return r11;
+	}
+
+	public void setR11(double r11) {
+		this.r11 = r11;
+	}
+	
+	public double getR12() {
+		return r12;
+	}
+	
+	public void setR12(double r12) {
+		this.r12 = r12;
+	}
+	
+	
+	
+	public double getoutputx() {
+		return outputx;
+	}
+
+	public void setoutputx(double outputx) {
+		this.outputx = outputx;
+	}
+	
+	public double getconmld1() {
+		return conmld1;
+	}
+
+	public void setconmld1(double conmld1) {
+		this.conmld1 = conmld1;
+	}
+	
+
+
+//Radio Button Selection
+public void radioSelect(ActionEvent event){
+		
+	if(rbtnAge45.isSelected()){
+		
+			
+	}
+	
+	if(rbtnAge50.isSelected()){
+		
+		
+				}
+	
+		if(rbtnMld1.isSelected()){
+			setR1(0.25);
+		
+		
+		
+			}
+		
+				if(rbtnMdr1.isSelected()){
+								
+								setR1(0.50);
+
+							}
+				
+							if(rbtnSvr1.isSelected()){
+			
+								setR1(0.75);
+
+								}
+											
+								if(rbtnVSvr1.isSelected()){
+									setR1(1.00);
+												}
+											
+									if(rbtnMld2.isSelected()){
+												setR2(0.25);				
+												
+									}
+										if(rbtnMdr2.isSelected()){
+		
+											setR2(0.50);
+										}
+										
+											if(rbtnSvr2.isSelected()){
+					
+											setR2(0.75);		
+																}
+										
+												if(rbtnVSvr2.isSelected()){
+													setR2(1.00);
+									
+											}
+												
+											if(rbtnMld3.isSelected()){
+											
+												setR3(0.25);
+											
+										 }
+				
+										 if(rbtnMdr3.isSelected()){
+					
+										setR3(0.50);
+	
+										}
+								
+									if(rbtnSvr3.isSelected()){
+										
+														setR3(0.75);
+										
+									}
+								if(rbtnVSvr3.isSelected()){
+											setR3(1.00);				
+														}
+								
+						if(rbtnMld4.isSelected()){
+														
+									setR4(0.25);
+														
+										 }
+							
+				if(rbtnMdr4.isSelected()){
+								
+								setR4(0.50);
+								
+								}
+												
+	if(rbtnSvr4.isSelected()){
+													
+		                 setR4(0.75);
+					}
+																
+				   if(rbtnVSvr4.isSelected()){
+						 setR4(1.00);									
+							
+				   }
+				   		if(rbtnMld5.isSelected()){										
+				   			setR5(0.25);
+																	
+			     			 }
+										
+							if(rbtnMdr5.isSelected()){
+											
+									setR5(0.50);
+											
+									}
+															
+									if(rbtnSvr5.isSelected()){
+																
+											setR5(0.75);
+																
+                                     		}
+									
+											if(rbtnVSvr5.isSelected()){
+													
+													setR5(1.00);						
+													}
+																			
+													if(rbtnMld6.isSelected()){
+																				
+														setR6(0.25);
+																				
+														}
+												        if(rbtnMdr6.isSelected()){
+														
+														
+												        	setR6(0.50);
+														
+																			}
+																		
+												if(rbtnSvr6.isSelected()){							
+														setR6(0.75);
+												}					
+									if(rbtnVSvr6.isSelected()){
+										setR6(1.00);
+										}
+						if(rbtnMld7.isSelected()){	
+						setR7(0.25);
+					
+				 }	
+		if(rbtnMdr7.isSelected()){
+																	
+					setR7(0.50);
+			}
+																					
+			if(rbtnSvr7.isSelected()){
+				
+				setR7(0.75);					
+																						
+				}
+				if(rbtnVSvr7.isSelected()){
+								setR7(1.00);		
+											}
+										
+					if(rbtnMld8.isSelected()){
+											
+						setR8(0.25);
+											
+							 }
+							if(rbtnMdr8.isSelected()){
+							setR8(0.50);
+					
+									}
+									
+									if(rbtnSvr8.isSelected()){
+
+											setR8(0.75);				
+
+											}
+											if(rbtnVSvr8.isSelected()){
+												setR8(1.00);
+													}
+													if(rbtnMld9.isSelected()){
+
+														setR9(0.25);
+
+														}
+
+													if(rbtnMdr9.isSelected()){
+
+														setR9(0.50);
+
+														}
+
+											if(rbtnSvr9.isSelected()){
+
+												setR9(0.75);
+
+													}
+								
+										if(rbtnVSvr9.isSelected()){
+											setR9(1.00);
+
+												}
+								
+								if(rbtnMld10.isSelected()){
+									
+									setR10(0.25);
+									
+								 	}
+		
+							if(rbtnMdr10.isSelected()){
+			
+									setR10(0.50);
+			
+			
+								}
+							
+						if(rbtnSvr10.isSelected()){
+
+							setR10(0.75);
+								
+							}
+										
+				if(rbtnVSvr10.isSelected()){
+						setR10(1.00);
+
+						}
+										
+		if(rbtnMld11.isSelected()){
+				setR11(0.25);
+											
+					 }
+				
+		if(rbtnMdr11.isSelected()){
+					
+			setR11(0.50);
+						}
+									
+if(rbtnSvr11.isSelected()){
+
+
+	setR11(0.75);						
+			}
+
+		if(rbtnVSvr11.isSelected()){
+				setR11(1.00);
+
+
+
+	}
+
+			if(rbtnMld12.isSelected()){
+
+				setR12(0.25);
+
+
+						}
+
+						if(rbtnMdr12.isSelected()){
+
+							setR12(0.50);
+
+
+								}
+
+								if(rbtnSvr12.isSelected()){
+
+
+
+									setR12(0.75);
+
+
+									}
+								
+								if(rbtnVSvr12.isSelected()){
+									setR12(1.00);
+
+									}
+	}
+
+//Fuzzifier map
+public void inferenceEngine(){
+	
+	double symptoms[][] = {{0.25,0.25,0.50,0.50,0.25,0.25,0.75,1.0,0.25,0.25,0.25,0.50},
+			{0.25,0.25,0.50,0.75,0.75,0.25,0.25,0.50,0.25,0.50,0.25,0.50},
+			{0.25,0.25,0.50,0.25,0.75,0.75,0.50,0.50,0.50,0.25,0.25,0.50},
+			{0.25,0.25,0.75,0.25,0.50,0.50,0.25,0.50,0.25,0.25,0.25,0.75},
+			{0.25,0.25,0.75,0.75,0.25,0.25,0.50,0.25,0.25,0.25,0.25,0.75},
+			{0.25,0.25,0.50,0.75,1.00,0.25,0.25,0.50,0.25,0.25,0.25,0.50},
+			{0.25,0.25,0.50,0.25,0.50,0.25,1.00,0.25,0.25,0.25,0.25,0.50},
+			{0.25,0.25,0.50,0.50,0.25,0.75,0.50,0.50,0.25,0.25,0.25,0.50},
+			{0.25,0.25,0.25,0.75,0.50,0.25,0.25,0.25,0.25,0.25,0.25,0.25},
+			{0.25,0.25,0.25,0.25,0.50,0.25,0.50,0.50,0.25,0.25,0.25,0.25},
+			{0.25,0.75,0.25,0.50,0.50,0.25,0.50,0.25,0.75,0.75,0.75,0.25},
+			{0.75,0.25,0.25,0.50,0.25,0.25,0.50,0.50,0.25,0.25,0.25,0.25}};
+	
+	for(int row =0 ; row < symptoms.length; ++row){
+		for(int column =0; column<symptoms[row].length;++column){
+			//input
+			
+			if (row == 0){
+				if(symptoms[row][column] == r1){
+					
+					symptoms[row][column]=r1;
+					
+					
+				}
+				else if(symptoms[row][column]!=r1){
+					symptoms[row][column]=0.0;
+				}
+			}
+
+			//input 2
+			else if (row == 1){
+				if(symptoms[row][column] == r2){
+					symptoms[row][column]=r2;
+				}
+				
+				else if(symptoms[row][column]!=r2){
+					symptoms[row][column]=0.0;
+				}
+				
+				
+			}
+			//input 3
+			else if (row == 2){
+				if(symptoms[row][column] == r3){
+					symptoms[row][column] = r3;
+				}
+				
+				else if(symptoms[row][column] != r3){
+					symptoms[row][column] = 0.0;
+				}
+				
+			}
+			//input 4
+			if (row == 3){
+				if(symptoms[row][column] == r4){
+					symptoms[row][column] = r4;
+				}
+				
+				else if(symptoms[row][column] != r4){
+					symptoms[row][column] = 0.0;
+				}
+			
+			}
+			//input 5
+			if (row == 4){
+				if(symptoms[row][column] == r5){
+					symptoms[row][column] = r5;
+				}
+
+				else if(symptoms[row][column] != r5){
+					symptoms[row][column] = 0.0;
+				}
+			
+			}
+			//input 6
+			if (row == 5){
+				if(symptoms[row][column] == r6){
+					symptoms[row][column] = r6;
+				}
+				
+				else if(symptoms[row][column] != r6){
+					symptoms[row][column] = 0.0;
+				}
+				
+			}
+			//input 7
+			if (row == 6){
+				if(symptoms[row][column] == r7){
+					symptoms[row][column] = r7;
+				}
+				
+				else if(symptoms[row][column] != r7){
+					symptoms[row][column] = r7;
+				}
+				
+			}
+			//input 8
+			if (row == 7){
+				if(symptoms[row][column] == r8){
+					symptoms[row][column] = r8;
+				}
+				
+				else if(symptoms[row][column] != r8){
+					symptoms[row][column] = 0.0;
+				}
+				
+			}
+			//input 9
+			if (row == 8){
+				if(symptoms[row][column] == r9){
+					symptoms[row][column] = r9;
+				}
+				
+				else if(symptoms[row][column] != r9){
+					symptoms[row][column] = 0.0;
+				}
+				
+			}
+			//input 10
+			if (row == 9){
+				if(symptoms[row][column] == r10){
+					symptoms[row][column] = r10;
+				}
+				
+				else if(symptoms[row][column] != r10){
+					symptoms[row][column] = 0.0;
+				}
+				
+			}
+			//input 11
+			if (row == 10){
+				if(symptoms[row][column] == r11){
+					symptoms[row][column] = r11;
+				}
+				
+				else if(symptoms[row][column] != r11){
+					symptoms[row][column] = 0.0;
+				}
+				
+			}
+			//input 12	
+			if (row == 11){
+				if(symptoms[row][column] == r12){
+					symptoms[row][column] = r12;
+				}
+				
+				else if(symptoms[row][column] != r12){
+					symptoms[row][column] = 0.0;
+				}
+			
+			}
+			
+			
+			//Rule1
+			
+				if(symptoms[11][0]==0.75){
+					conmld1=0.75;
+				}
+				if(symptoms[0][0]==0.25){
+					conmld1=0.25;
+				}
+				if(symptoms[1][0]==0.25){
+					conmld1=0.25;
+				}
+				if(symptoms[2][0]==0.25){
+					conmld1=0.25;
+				}
+				if(symptoms[3][0]==0.25){
+					conmld1=0.25;
+				}
+				if(symptoms[4][0]==0.25){
+					conmld1=0.25;
+				}
+				if(symptoms[5][0]==0.25){
+					conmld1=0.25;
+				}
+				if(symptoms[6][0]==0.25){
+					conmld1=0.25;
+				}
+				if(symptoms[7][0]==0.25){
+					conmld1=0.25;
+				}
+				if(symptoms[8][0]==0.25){
+					conmld1=0.25;
+				}
+				if(symptoms[9][0]==0.25){
+					conmld1=0.25;
+				}
+				if(symptoms[10][0]==0.25){
+					conmld1=0.25;
+				}
+				
+				setconmld1(conmld1);
+			//rule2
+				if(symptoms[10][1]==0.75){
+					conmld2=0.75;
+				}
+				if(symptoms[0][1]==0.25){
+					conmld2=0.25;
+				}
+				if(symptoms[1][1]==0.25){
+					conmld2=0.25;
+					}
+				if(symptoms[2][1]==0.25){
+					conmld2=0.25;
+					}
+				if(symptoms[3][1]==0.25){
+					conmld2=0.25;
+					}
+				if(symptoms[4][1]==0.25){
+					conmld2=0.25;
+					}
+				if(symptoms[5][1]==0.25){
+					conmld2=0.25;
+					}
+				if(symptoms[6][1]==0.25){
+					conmld2=0.25;
+					}
+				if(symptoms[7][1]==0.25){
+					conmld2=0.25;
+					}
+				if(symptoms[8][1]==0.25){
+					conmld2=0.25;
+					}
+				if(symptoms[9][1]==0.25){
+					conmld2=0.25;
+					}
+				if(symptoms[11][1]==0.25){
+					conmld2=0.25;
+					}
+				
+				
+				
+			//rule3
+				if(symptoms[3][2]==0.75){
+					conmdr1=0.75;
+				}
+				if(symptoms[4][2]==0.75){
+					conmdr1=0.75;
+				}
+				if(symptoms[0][2]==0.5){
+					conmdr1=0.5;
+				}
+				if(symptoms[1][2]==0.5){
+					conmdr1=0.5;
+				}
+				if(symptoms[2][2]==0.5){
+					conmdr1=0.5;
+				}
+				if(symptoms[5][2]==0.5){
+					conmdr1=0.5;
+				}
+				if(symptoms[6][2]==0.5){
+					conmdr1=0.5;
+				}
+				if(symptoms[7][2]==0.5){
+					conmdr1=0.5;
+				}
+				if(symptoms[8][2]==0.25){
+					conmdr1=0.25;
+				}
+				if(symptoms[9][2]==0.25){
+					conmdr1=0.25;
+				}
+				if(symptoms[10][2]==0.25){
+					conmdr1=0.25;
+						   }
+				if(symptoms[11][2]==0.25){
+					conmdr1=0.25;
+				}
+			
+				
+				
+			//rule4
+				if(symptoms[1][3]==0.75){
+					conmld2=0.75;
+				}
+				if(symptoms[4][3]==0.75){
+					conmld2=0.25;
+				}
+				if(symptoms[5][3]==0.75){
+					conmld2=0.25;
+				}
+				if(symptoms[0][3]==0.5){
+					conmld2=0.5;
+				}
+				if(symptoms[2][3]==0.25){
+					conmld2=0.25;
+				}
+				if(symptoms[3][3]==0.25){
+					conmld2=0.25;
+				}
+				if(symptoms[6][3]==0.25){
+					conmld2=0.25;
+				 }
+				if(symptoms[7][3]==0.25){
+					conmld2=0.25;
+				}
+				if(symptoms[8][3]==0.25){
+					conmld2=0.25;
+				}
+				if(symptoms[9][3]==0.25){
+					conmld2=0.25;
+				}
+				if(symptoms[10][3]==0.25){
+					conmld2=0.25;
+				}
+				if(symptoms[11][3]==0.25){
+					conmld2=0.25;
+				}
+							
+				
+			
+			//rule5
+				if(symptoms[5][4]==1.00){
+					convrs1=1.00;
+				}
+				if(symptoms[1][4]==0.75){
+					convrs1=0.75;
+				}
+				if(symptoms[2][4]==0.75){
+					convrs1=0.75;
+				}
+							
+				if(symptoms[3][4]==0.5){
+					convrs1=0.5;
+				}
+				if(symptoms[6][4]==0.5){
+					convrs1=0.5;
+				}
+				if(symptoms[8][4]==0.5){
+					convrs1=0.5;
+				}
+				if(symptoms[9][4]==0.5){
+					convrs1=0.5;
+				}
+				if(symptoms[10][4]==0.5){
+					convrs1=0.5;
+				}
+				if(symptoms[4][4]==0.25){
+					convrs1=0.25;
+				}
+				if(symptoms[0][4]==0.25){
+					convrs1=0.25;
+				}
+				if(symptoms[7][4]==0.25){
+					convrs1=0.25;
+				}
+				if(symptoms[11][4]==0.25){
+					convrs1=0.25;
+				}
+							  
+				
+			//rule 6
+				if(symptoms[2][5]==0.75){
+					consvr2=0.75;
+				}
+				if(symptoms[7][5]==0.75){
+					consvr2=0.75;
+				}
+				if(symptoms[3][5]==0.5){
+					consvr2=0.5;
+				}
+				if(symptoms[0][5]==0.25){
+					consvr2=0.25;
+				}
+				if(symptoms[1][5]==0.25){
+					consvr2=0.25;
+				}
+				if(symptoms[4][5]==0.25){
+					consvr2=0.25;
+				}
+				if(symptoms[5][5]==0.25){
+					consvr2=0.25;
+				}
+				if(symptoms[6][5]==0.25){
+					consvr2=0.25;
+				}
+				if(symptoms[8][5]==0.25){
+					consvr2=0.25;
+				}
+				if(symptoms[9][5]==0.25){
+					consvr2=0.25;
+				}
+				if(symptoms[10][5]==0.25){
+					consvr2=0.25;
+				}
+				if(symptoms[11][5]==0.25){
+					consvr2=0.25;
+				}
+								
+			//rule7
+				if(symptoms[6][6]==1.00){
+					convrs2=1.00;
+				}
+				if(symptoms[0][6]==0.75){
+					convrs2=0.75;
+				}
+				if(symptoms[2][6]==0.5){
+					convrs2=0.5;
+				}
+				if(symptoms[4][6]==0.5){
+					convrs2=0.5;
+				}
+				if(symptoms[9][6]==0.5){
+					convrs2=0.5;
+				}
+				if(symptoms[10][6]==0.5){
+					convrs2=0.5;
+				}
+				if(symptoms[11][6]==0.5){
+					convrs2=0.5;
+				}
+				if(symptoms[1][6]==0.25){
+					convrs2=0.25;
+				}
+				if(symptoms[3][6]==0.25){
+					convrs2=0.25;
+				}
+				if(symptoms[5][6]==0.25){
+					convrs2=0.25;
+				}
+				if(symptoms[7][6]==0.5){
+					convrs2=0.5;
+				}
+				if(symptoms[8][6]==0.25){
+					convrs2=0.25;
+				}
+				
+									
+				
+				
+			//rule8
+				if(symptoms[0][7]==1.0){
+					consvr2=1.0;
+				}
+				if(symptoms[1][7]==0.5){
+					consvr2=0.5;
+				}
+				if(symptoms[2][7]==0.5){
+					consvr2=0.5;
+				}
+				if(symptoms[3][7]==0.5){
+					consvr2=0.5;
+				}
+				if(symptoms[5][7]==0.5){
+					consvr2=0.5;
+				}
+				if(symptoms[7][7]==0.5){
+					consvr2=0.5;
+				}
+				if(symptoms[9][7]==0.5){
+					consvr2=0.5;
+				}
+				if(symptoms[11][7]==0.5){
+					consvr2=0.5;
+				}
+				if(symptoms[4][7]==0.25){
+					consvr2=0.25;
+				}					
+				if(symptoms[6][7]==0.25){
+					consvr2=0.25;
+				}
+				if(symptoms[8][7]==0.25){
+					consvr2=0.25;
+				}
+				if(symptoms[10][7]==0.25){
+					consvr2=0.25;
+				}
+									
+									
+									
+									
+			//rule9
+				if(symptoms[10][8]==0.75){
+					conmdr2=0.75;
+				}
+				if(symptoms[2][8]==0.5){
+					conmdr2=0.5;
+				}
+				if(symptoms[0][8]==0.25){
+					conmdr2=0.25;
+				}
+				if(symptoms[1][8]==0.25){
+					conmdr2=0.25;
+				}
+				if(symptoms[3][8]==0.25){
+					conmdr2=0.25;
+				}
+				if(symptoms[4][8]==0.25){
+					conmdr2=0.25;
+				}
+				if(symptoms[5][8]==0.25){
+					conmdr2=0.25;
+				}
+				if(symptoms[6][8]==0.25){
+					conmdr2=0.25;
+				}
+				if(symptoms[7][8]==0.25){
+					conmdr2=0.25;
+				}
+				if(symptoms[8][8]==0.25){
+					conmdr2=0.25;
+				}
+				if(symptoms[9][8]==0.25){
+					conmdr2=0.25;
+				}
+				if(symptoms[11][8]==0.25){
+					conmdr2=0.25;
+				}	
+			
+				
+			//rule10
+				if(symptoms[10][10]==0.75){
+					conmld3=0.75;
+				}
+				if(symptoms[0][9]==0.25){
+					conmdr3=0.25;
+				}
+				if(symptoms[1][9]==0.5){
+					conmdr3=0.5;
+				}
+				if(symptoms[2][9]==0.25){
+					conmdr3=0.25;
+				}
+				if(symptoms[3][9]==0.25){
+					conmdr3=0.25;
+				}
+				if(symptoms[4][9]==0.25){
+					conmdr3=0.25;
+				}
+				if(symptoms[5][9]==0.25){
+					conmdr3=0.25;
+				}
+				if(symptoms[6][9]==0.25){
+					conmdr3=0.25;
+				}
+				if(symptoms[7][9]==0.25){
+					conmdr3=0.25;
+				}
+				if(symptoms[8][9]==0.25){
+					conmdr3=0.25;
+				}
+				if(symptoms[9][9]==0.25){
+					conmdr3=0.25;
+				}
+				if(symptoms[10][9]==0.75){
+					conmdr3=0.75;
+				}
+				if(symptoms[11][9]==0.25){
+					conmdr3=0.25;
+				}
+			//rule11
+				if(symptoms[10][10]==0.75){
+					conmld3=0.75;
+				}
+				if(symptoms[0][10]==0.25){
+					conmld3=0.25;
+				}
+				if(symptoms[1][10]==0.25){
+					conmld3=0.25;
+				}
+				if(symptoms[2][10]==0.25){
+					conmld3=0.25;
+				}
+				if(symptoms[3][10]==0.25){
+					conmld3=0.25;
+				}
+				if(symptoms[4][10]==0.25){
+					conmld3=0.25;
+				}
+				if(symptoms[5][10]==0.25){
+					conmld3=0.25;
+				}
+				if(symptoms[6][10]==0.25){
+					conmld3=0.25;
+				}
+				if(symptoms[7][10]==0.25){
+					conmld3=0.25;
+				}
+				if(symptoms[8][10]==0.25){
+					conmld3=0.25;
+				}
+				if(symptoms[9][10]==0.25){
+					conmld3=0.25;
+				}
+				if(symptoms[11][10]==0.25){
+					conmld3=0.25;
+				}
+			//rule12
+				if(symptoms[3][11]==0.75){
+					conmdr4=0.75;
+				}
+				if(symptoms[4][11]==0.75){
+					conmdr4=0.75;
+				}
+				if(symptoms[0][11]==0.5){
+					conmdr4=0.5;
+				}
+				if(symptoms[1][11]==0.5){
+					conmdr4=0.5;
+				}
+				if(symptoms[2][11]==0.5){
+					conmdr4=0.5;
+				}
+				if(symptoms[5][11]==0.5){
+					conmdr4=0.5;
+				}
+				if(symptoms[6][11]==0.5){
+					conmdr4=0.5;
+				}
+				if(symptoms[7][11]==0.5){
+					conmdr4=0.5;
+				}
+				if(symptoms[8][11]==0.25){
+					conmdr4=0.25;
+				}
+				if(symptoms[9][11]==0.25){
+					conmdr4=0.25;
+				}
+				if(symptoms[10][11]==0.25){
+					conmdr4=0.25;
+				}
+				if(symptoms[11][11]==0.25){
+					conmdr4=0.25;
+				}	
+				double y=0;
+				
+				
+				y=conmld1;
+				setoutputx(y);
+
+				//Inference Engine Computations
+				double imild,imoderate,isevere,iverysevere;
+				
+				double mild =0;
+				
+				imild=((conmld1*conmld1)+(conmld2*conmld2)+(conmld3*conmld3));
+				mild=Math.sqrt(imild);
+				//System.out.println(df.format(mild));
+				
+				//moderate	
+				double moderate=0;
+				imoderate=((conmdr1*conmdr1)+(conmdr2*conmdr2)+(conmdr3*conmdr3)+(conmdr4*conmdr4));
+				moderate=Math.sqrt(imoderate);
+				//System.out.println(df.format(moderate));
+				
+				//Severe
+				double severe=0;
+				isevere=((consvr1*consvr1)+(consvr2*consvr2));
+				severe=Math.sqrt(isevere);
+				//System.out.println(df.format(severe));
+				
+				//very severe
+				double verysevere=0;
+				iverysevere=((convrs1*convrs1)+(convrs2*convrs2)+(convrs3*convrs3));
+				verysevere=Math.sqrt(iverysevere);
+				//Output X
+						double outTemp=(((mild*0.2)+(moderate*0.4)+(severe*0.65)+(verysevere*0.9)/(mild+moderate+severe+verysevere))*(100));
+						setoutputx(outTemp);
+				
+		}
+	}
+}
+	public void Analyze(ActionEvent event) throws Exception {
+		
+		try{
+			DecimalFormat df = new DecimalFormat("#.#");
+			double x;
+			x=getoutputx();	
+			//System.out.println((df.format(x))+"%");
+			//lbloutput1.setText(df.format(x)+"%");
+			lbloutput.setText(df.format(x)+"%");
+			inferenceEngine();
+			
+			System.out.println((df.format(x))+"%");
+			
+		}
+		catch(Exception e){		
+		}
+	}
+	public void save(ActionEvent event) throws Exception {
+	try{
+		
+		lblsave.setText("Record has been saved");
+	}
+	catch (Exception e){
+		
+	}
+	
+	}
+	
+
+public void Assessment(ActionEvent event) throws Exception{
+	
+	try{
+		Stage primaryStage = new Stage();
+		
+		Parent root = FXMLLoader.load(getClass().getResource("/APP/AssessmentForm.fxml"));
+		Scene scene = new Scene(root,750,643);
+		//scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		primaryStage.setScene(scene);
+		primaryStage.show();
+	}
+	catch(Exception e){
+	}
+	
+}
+	public void eval(ActionEvent event) throws Exception {
+		try{
+			
+			
+			DecimalFormat df = new DecimalFormat("#.#");
+			double x;
+			x=getoutputx();	
+			System.out.println((df.format(x))+"%");
+			
+			lbleval.setText("Evaluation Saved");
+			inferenceEngine();
+			
+			
+		}
+		catch (Exception e){
+			
+		}
+		
+		}
+	
+	
+
+
+
+
+	//DB Connection
+	public static void ConnectDB(){	
+		try
+		{
+		Class.forName("com.mysql.jdbc.Driver");
+		Connection conn = null;
+		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test","root", "");
+		System.out.print("Database is connected !");
+		
+		
+		conn.close();
+		
+		
+		
+		
+		}
+		catch(Exception e)
+		{
+		System.out.print("Do not connect to DB - Error:"+e);
+		}
+		
+	}
+	
+
+	
+}
